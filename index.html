@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GSM ANWARUL Info Tool</title>
+
+<style>
+body{
+  background:#0f172a;
+  color:white;
+  font-family:sans-serif;
+  text-align:center;
+  padding:20px;
+}
+.box{
+  background:#111827;
+  padding:20px;
+  border-radius:15px;
+  margin-top:20px;
+}
+input{
+  padding:12px;
+  width:90%;
+  border-radius:10px;
+  border:none;
+}
+button{
+  padding:12px;
+  margin-top:10px;
+  border:2px solid cyan;
+  background:none;
+  color:cyan;
+  border-radius:10px;
+  width:90%;
+  transition:0.3s;
+}
+button:hover{
+  background:cyan;
+  color:black;
+  transform:scale(1.05);
+}
+#result{
+  margin-top:20px;
+  text-align:left;
+  white-space:pre-line;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📱 GSM ANWARUL Info Tool</h1>
+
+<div class="box">
+  <input id="number" placeholder="Enter mobile number">
+  <button onclick="check()">Search</button>
+
+  <div id="result"></div>
+</div>
+
+<script>
+
+async function check(){
+  let num = document.getElementById("number").value;
+  let resultDiv = document.getElementById("result");
+
+  if(num.length !== 10){
+    resultDiv.innerHTML = "❌ Invalid Number";
+    return;
+  }
+
+  resultDiv.innerHTML = "🔎 Searching...";
+
+  try{
+    // ✅ Tumhara API yaha connect kiya gaya hai
+    let response = await fetch("https://new-num-info.vercel.app/?key=haque&number=" + num);
+    let data = await response.json();
+
+    if(data.status === "success" && data.results.length > 0){
+
+      let r = data.results[0];
+
+      let output = `
+✅ Information Found
+
+🔢 Number: ${num}
+━━━━━━━━━━━━━━━━━━━━━━
+
+* 👤 Name: ${r.name || "N/A"}
+* 👨‍🦳 Father: ${r.fname || "N/A"}
+* 📱 Mobile: ${r.mobile || num}
+* 🆔 ID: ${r.id || "N/A"}
+* 🏠 Address: ${r.address || "N/A"}
+* 📍 Circle: ${r.circle || "N/A"}
+
+━━━━━━━━━━━━━━━━━━━━━━
+`;
+
+      resultDiv.innerHTML = output;
+
+    }else{
+      resultDiv.innerHTML = "❌ No Data Found";
+    }
+
+  }catch(e){
+    resultDiv.innerHTML = "⚠️ API Error / Blocked";
+  }
+}
+
+</script>
+
+</body>
+</html>
